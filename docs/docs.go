@@ -17,6 +17,11 @@ const docTemplate = `{
     "paths": {
         "/auth/forgot": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Initiates the forgot password flow by sending a code to the user's email",
                 "consumes": [
                     "application/json"
@@ -97,6 +102,11 @@ const docTemplate = `{
         },
         "/auth/logout": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Logs out a user by invalidating the refresh token",
                 "consumes": [
                     "application/json"
@@ -177,6 +187,11 @@ const docTemplate = `{
         },
         "/auth/reset": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Resets the user's password using the provided code and new password",
                 "consumes": [
                     "application/json"
@@ -334,8 +349,13 @@ const docTemplate = `{
                         "type": "string",
                         "description": "User ID",
                         "name": "id",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "User Email",
+                        "name": "email",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -537,17 +557,24 @@ const docTemplate = `{
                 }
             }
         }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
+	Version:          "1.0",
+	Host:             "localhost:8085",
+	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Title:            "Auth Service",
+	Description:      "Auth Service",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

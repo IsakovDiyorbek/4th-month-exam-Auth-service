@@ -1,6 +1,7 @@
 package token
 
 import (
+	"errors"
 	"log"
 	"log/slog"
 	"net/http"
@@ -62,6 +63,7 @@ func GenereteJWTToken(user *pb.RegisterRequest) *Tokens {
 	}
 }
 
+
 func ExtractClaim(tokenStr string) (jwt.MapClaims, error) {
 	var (
 		token *jwt.Token
@@ -69,7 +71,7 @@ func ExtractClaim(tokenStr string) (jwt.MapClaims, error) {
 	)
 
 	keyFunc := func(token *jwt.Token) (interface{}, error) {
-		return []byte(config.Load().TokenKey), nil
+		return []byte(tokenKey), nil
 	}
 	token, err = jwt.Parse(tokenStr, keyFunc)
 	if err != nil {
@@ -78,11 +80,12 @@ func ExtractClaim(tokenStr string) (jwt.MapClaims, error) {
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !(ok && token.Valid) {
-		return nil, err
+		return nil, errors.New("invalid token")
 	}
 
 	return claims, nil
 }
+
 
 // ExtractClaims ...
 func (jwtHandler *JWTHandler) ExtractClaims() (jwt.MapClaims, error) {

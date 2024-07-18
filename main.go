@@ -33,6 +33,6 @@ func main() {
 
 	r := api.NewGin(h)
 	
-	fmt.Println("Server started on port: 8080")
-	r.Run(":8080")
+	fmt.Println("Server started on port: 8085")
+	r.Run(":8085")
 }

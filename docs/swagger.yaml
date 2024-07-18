@@ -1,3 +1,4 @@
+basePath: /
 definitions:
   auth.ForgotPasswordRequest:
     properties:
@@ -115,8 +116,12 @@ definitions:
       message:
         type: string
     type: object
+host: localhost:8085
 info:
   contact: {}
+  description: Auth Service
+  title: Auth Service
+  version: "1.0"
 paths:
   /auth/forgot:
     post:
@@ -142,6 +147,8 @@ paths:
           description: Invalid request payload
           schema:
             type: string
+      security:
+      - BearerAuth: []
       summary: Initiate forgot password flow
       tags:
       - Auth
@@ -194,6 +201,8 @@ paths:
           description: Invalid request payload
           schema:
             type: string
+      security:
+      - BearerAuth: []
       summary: Logout a user
       tags:
       - Auth
@@ -250,6 +259,8 @@ paths:
           description: Error Reset
           schema:
             type: string
+      security:
+      - BearerAuth: []
       summary: Reset user's password
       tags:
       - Auth
@@ -318,7 +329,10 @@ paths:
       - description: User ID
         in: query
         name: id
-        required: true
+        type: string
+      - description: User Email
+        in: query
+        name: email
         type: string
       produces:
       - application/json
@@ -336,4 +350,9 @@ paths:
       summary: Get user profile
       tags:
       - User
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

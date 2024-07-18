@@ -14,13 +14,15 @@ import (
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Param id query string true "User ID"
+// @Param id query string false "User ID"
+// @Param email query string false "User Email"
 // @Success 200 {object} user.GetProfileResponse
 // @Failure 400 {object} string "Invalid request payload"
 // @Router /user/profile/{id} [get]
 func (h *Handler) GetProfile(c *gin.Context) {
 	id := c.Query("id")
-	req := &user.GetProfileRequest{Id: id}
+	email := c.Query("email")
+	req := &user.GetProfileRequest{Id: id, Email: email}
 	res, err := h.User.GetProfile(c, req)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

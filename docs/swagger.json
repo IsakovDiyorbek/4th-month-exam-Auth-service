@@ -1,11 +1,21 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "Auth Service",
+        "title": "Auth Service",
+        "contact": {},
+        "version": "1.0"
     },
+    "host": "localhost:8085",
+    "basePath": "/",
     "paths": {
         "/auth/forgot": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Initiates the forgot password flow by sending a code to the user's email",
                 "consumes": [
                     "application/json"
@@ -86,6 +96,11 @@
         },
         "/auth/logout": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Logs out a user by invalidating the refresh token",
                 "consumes": [
                     "application/json"
@@ -166,6 +181,11 @@
         },
         "/auth/reset": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Resets the user's password using the provided code and new password",
                 "consumes": [
                     "application/json"
@@ -323,8 +343,13 @@
                         "type": "string",
                         "description": "User ID",
                         "name": "id",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "User Email",
+                        "name": "email",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -525,6 +550,13 @@
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }

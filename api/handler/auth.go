@@ -74,6 +74,7 @@ func (h *Handler) Login(c *gin.Context) {
 // @Tags Auth
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param request body auth.LogoutRequest true "Logout Request"
 // @Success 200 {object} auth.LogoutResponse
 // @Failure 401 {object} string "Invalid request payload"
@@ -99,6 +100,7 @@ func (h *Handler) Logout(c *gin.Context) {
 // @Tags Auth
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param request body auth.ForgotPasswordRequest true "Email"
 // @Success 200 {object} string "Success"
 // @Failure 400 {object} string "Invalid request payload"
@@ -130,6 +132,7 @@ func (h *Handler) ForgotPassword(c *gin.Context) {
 // @Tags Auth
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param request body auth.ResetPasswordRequest true "Reset Password Request"
 // @Success 200 {object} auth.ResetPasswordResponse
 // @Failure 400 {object} string "Invalid request payload"

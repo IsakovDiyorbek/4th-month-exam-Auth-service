@@ -3,6 +3,7 @@ package postgres
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"log"
 
 	pb "github.com/Exam4/4th-month-exam-Auth-service/genproto/user"
@@ -16,22 +17,39 @@ func NewUserRepo(db *sql.DB) *UserRepo {
 	return &UserRepo{db: db}
 }
 func (p *UserRepo) GetProfile(ctx context.Context, req *pb.GetProfileRequest) (*pb.GetProfileResponse, error) {
-	query := `
-		SELECT id, username, email, full_name, created_at
-		FROM users
-		WHERE id = $1
-	`
+	var query string
+	var args []interface{}
+	if req.Email == "" && req.Id == "" {
+        return nil, errors.New("either email or id must be provided")
+    }
+	if req.Email != "" {
+		query = `
+            SELECT id, username, email, full_name, created_at
+            FROM users
+            WHERE email = $1
+        `
+		args = append(args, req.Email)
+	} else if req.Id != "" {
+		query = `
+            SELECT id, username, email, full_name, created_at
+            FROM users
+            WHERE id = $1
+        `
+		args = append(args, req.Id)
+	} else {
+		return nil, errors.New("neither email nor id provided")
+	}
+
 	var user pb.GetProfileResponse
-	err := p.db.QueryRowContext(ctx, query, req.Id).Scan(
+	err := p.db.QueryRowContext(ctx, query, args...).Scan(
 		&user.Id, &user.Username, &user.Email, &user.FullName, &user.CreatedAt,
 	)
 	if err != nil {
-		log.Printf("Error get profile: %v\n", err)
+		log.Printf("Error getting profile: %v\n", err)
 		return nil, err
 	}
 	return &user, nil
 }
-
 
 func (p *UserRepo) UpdateProfile(ctx context.Context, req *pb.UpdateProfileRequest) (*pb.UpdateProfileResponse, error) {
 	query := `
@@ -46,7 +64,7 @@ func (p *UserRepo) UpdateProfile(ctx context.Context, req *pb.UpdateProfileReque
 		return nil, err
 	}
 	return &pb.UpdateProfileResponse{Message: "Profile updated successfully"}, nil
-	
+
 }
 
 func (p *UserRepo) ChangePassword(ctx context.Context, req *pb.ChangePasswordRequest) (*pb.ChangePasswordResponse, error) {
@@ -62,5 +80,3 @@ func (p *UserRepo) ChangePassword(ctx context.Context, req *pb.ChangePasswordReq
 	}
 	return &pb.ChangePasswordResponse{Message: "Password changed successfully"}, nil
 }
-	
-

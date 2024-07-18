@@ -2,16 +2,25 @@ package api
 
 import (
 	"github.com/Exam4/4th-month-exam-Auth-service/api/handler"
+	middleware "github.com/Exam4/4th-month-exam-Auth-service/api/midlleware"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @title Auth Service
+// @version 1.0
+// @description Auth Service
+// @host localhost:8085
+// @BasePath /
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func NewGin(h handler.Handler) *gin.Engine {
 	r := gin.Default()
 
 	r.GET("/api/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
+	r.Use(middleware.MiddleWare())
 	auth := r.Group("/auth")
 	{
 		auth.POST("/register", h.Register)

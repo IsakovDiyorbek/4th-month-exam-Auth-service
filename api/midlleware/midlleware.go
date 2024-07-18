@@ -84,3 +84,22 @@ func (a *JwtRoleAuth) CheckPermission(r *gin.Context) (bool, error) {
 
 	return allowed, nil
 }
+
+
+func MiddleWare() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		t := ctx.GetHeader("Authorization")
+		url := ctx.Request.URL.Path
+		if strings.Contains(url, "swagger") || url == "/auth/login" || url == "/auth/register"{
+			ctx.Next()
+			return
+		} else if _, err := token.ExtractClaim(t); err != nil {
+			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		ctx.Next()
+
+	}
+}
