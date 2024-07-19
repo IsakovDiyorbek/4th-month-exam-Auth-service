@@ -32,7 +32,7 @@ func (h *Handler) Register(c *gin.Context) {
 		c.JSON(400, gin.H{"error": "Invalid struct"})
 	}
 
-	if len(req.Password) < 8 {
+	if len(req.Password) <= 6 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Password must be at least 8 characters long"})
 		return
 	}

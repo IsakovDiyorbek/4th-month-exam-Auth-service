@@ -39,12 +39,12 @@ func (p *AuthRepo) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.R
 		return nil, errors.New("redis client is not initialized")
 	}
 
-	err = p.redis.Set(ctx, req.Username, token, 30*time.Minute).Err()
+	err = p.redis.Set(ctx, req.Username, token, 24*time.Hour).Err()
 	if err != nil {
 		return nil, err
 	}
 
-	err = p.redis.Set(ctx, token, req.Username, 30*time.Minute).Err()
+	err = p.redis.Set(ctx, token, req.Username, 24*time.Hour).Err()
 	if err != nil {
 		return nil, err
 	}

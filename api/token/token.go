@@ -63,7 +63,6 @@ func GenereteJWTToken(user *pb.RegisterRequest) *Tokens {
 	}
 }
 
-
 func ExtractClaim(tokenStr string) (jwt.MapClaims, error) {
 	var (
 		token *jwt.Token
@@ -85,7 +84,6 @@ func ExtractClaim(tokenStr string) (jwt.MapClaims, error) {
 
 	return claims, nil
 }
-
 
 // ExtractClaims ...
 func (jwtHandler *JWTHandler) ExtractClaims() (jwt.MapClaims, error) {

@@ -11,7 +11,6 @@ import (
 	pr "github.com/Exam4/4th-month-exam-Auth-service/api/kafka"
 	"github.com/Exam4/4th-month-exam-Auth-service/genproto/auth"
 	"github.com/Exam4/4th-month-exam-Auth-service/genproto/user"
-	"github.com/Exam4/4th-month-exam-Auth-service/kafka"
 	consumer "github.com/Exam4/4th-month-exam-Auth-service/kafka"
 	"github.com/Exam4/4th-month-exam-Auth-service/service"
 	"github.com/Exam4/4th-month-exam-Auth-service/storage/postgres"
@@ -42,15 +41,15 @@ func main() {
 
 	kcm := consumer.NewKafkaConsumerManager()
 	if err := kcm.RegisterConsumer(brokers, "auth", "register", consumer.AuhtRegister(AuthService)); err != nil {
-		if err == kafka.ErrConsumerAlreadyExists {
+		if err == consumer.ErrConsumerAlreadyExists {
 			log.Printf("Consumer for topic 'auth' already exists")
 		} else {
 			log.Fatalf("Error registering consumer: %v", err)
 		}
 	}
 
-	if err := kcm.RegisterConsumer(brokers, "user", "register", consumer.Change(UserService)); err != nil {
-		if err == kafka.ErrConsumerAlreadyExists {
+	if err := kcm.RegisterConsumer(brokers, "user", "update", consumer.Change(UserService)); err != nil {
+		if err == consumer.ErrConsumerAlreadyExists {
 			log.Printf("Consumer for topic 'user' already exists")
 		} else {
 			log.Fatalf("Error registering consumer: %v", err)
@@ -65,7 +64,7 @@ func main() {
 		}
 	}()
 
-	userConn, err := grpc.NewClient(fmt.Sprintf("auth-service_exam%s", ":9999"), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	userConn, err := grpc.NewClient(fmt.Sprintf("auth_service%s", ":9999"), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatal("Error while connecting: ", err.Error())
 	}

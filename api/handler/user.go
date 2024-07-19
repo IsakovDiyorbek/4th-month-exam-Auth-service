@@ -49,12 +49,12 @@ func (h *Handler) UpdateProfile(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid struct"})
 		return
 	}
-	res, err := h.User.UpdateProfile(c, req)
+	_, err := h.User.UpdateProfile(c, req)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, res)
+	c.JSON(http.StatusOK, "Success updated User")
 }
 
 // ChangePassword godoc
@@ -75,7 +75,7 @@ func (h *Handler) ChangePassword(c *gin.Context) {
 		return
 	}
 
-	if len(req.NewPassword) < 8 {
+	if len(req.NewPassword) <= 6 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Password must be at least 8 characters long"})
 		return
 	}

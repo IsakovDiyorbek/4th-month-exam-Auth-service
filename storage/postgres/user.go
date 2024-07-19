@@ -16,6 +16,7 @@ type UserRepo struct {
 func NewUserRepo(db *sql.DB) *UserRepo {
 	return &UserRepo{db: db}
 }
+
 func (p *UserRepo) GetProfile(ctx context.Context, req *pb.GetProfileRequest) (*pb.GetProfileResponse, error) {
 	var query string
 	var args []interface{}
