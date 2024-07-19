@@ -12,6 +12,15 @@ service AuthService {
   rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse);
 }
 
+message User {
+  string username = 1;
+  string email = 2;
+  string password = 3;
+  string full_name = 4;
+  string date_of_birth = 5;
+  string token = 6;
+}
+
 message RegisterRequest {
   string username = 1;
   string email = 2;
@@ -21,13 +30,7 @@ message RegisterRequest {
   string token = 6;
 }
 
-message RegisterResponse {
-  string id = 1;
-  string username = 2;
-  string email = 3;
-  string full_name = 4;
-  string created_at = 5;
-}
+message RegisterResponse {}
 
 
 message LoginRequest {

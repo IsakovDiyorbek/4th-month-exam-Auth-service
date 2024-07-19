@@ -446,24 +446,7 @@ const docTemplate = `{
             }
         },
         "auth.RegisterResponse": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "full_name": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
+            "type": "object"
         },
         "auth.ResetPasswordRequest": {
             "type": "object",
@@ -550,12 +533,7 @@ const docTemplate = `{
             }
         },
         "user.UpdateProfileResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
+            "type": "object"
         }
     },
     "securityDefinitions": {

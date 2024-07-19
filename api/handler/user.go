@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/Exam4/4th-month-exam-Auth-service/genproto/user"
@@ -73,10 +74,19 @@ func (h *Handler) ChangePassword(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid struct"})
 		return
 	}
-	res, err := h.User.ChangePassword(c, req)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+	if len(req.NewPassword) < 8 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Password must be at least 8 characters long"})
 		return
 	}
-	c.JSON(http.StatusOK, res)
+
+	res, err := json.Marshal(req)
+	if err != nil {
+		c.JSON(400, "Error Marshal Struct")
+	}
+	err = h.Kafka.ProduceMessages("user", res)
+	if err != nil {
+		c.JSON(400, "Error change")
+	}
+	c.JSON(http.StatusOK, "Success")
 }

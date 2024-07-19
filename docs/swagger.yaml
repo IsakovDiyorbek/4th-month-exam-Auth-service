@@ -45,17 +45,6 @@ definitions:
         type: string
     type: object
   auth.RegisterResponse:
-    properties:
-      created_at:
-        type: string
-      email:
-        type: string
-      full_name:
-        type: string
-      id:
-        type: string
-      username:
-        type: string
     type: object
   auth.ResetPasswordRequest:
     properties:
@@ -112,9 +101,6 @@ definitions:
         type: string
     type: object
   user.UpdateProfileResponse:
-    properties:
-      message:
-        type: string
     type: object
 host: localhost:8085
 info:

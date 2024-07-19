@@ -1,13 +1,17 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"log/slog"
 	"math/rand"
+	"net/http"
 	"time"
 
 	"github.com/Exam4/4th-month-exam-Auth-service/api/token"
+	_ "github.com/Exam4/4th-month-exam-Auth-service/docs"
 	"github.com/Exam4/4th-month-exam-Auth-service/genproto/auth"
+	"github.com/Exam4/4th-month-exam-Auth-service/genproto/user"
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,17 +27,29 @@ import (
 // @Router /auth/register [post]
 func (h *Handler) Register(c *gin.Context) {
 	req := &auth.RegisterRequest{}
-	err := c.BindJSON(&req)
+	err := c.ShouldBindJSON(&req)
 	if err != nil {
 		c.JSON(400, gin.H{"error": "Invalid struct"})
 	}
+
+	if len(req.Password) < 8 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Password must be at least 8 characters long"})
+		return
+	}
+
 	token := token.GenereteJWTToken(req)
 	req.Token = token.RefreshToken
-	res, err := h.Auth.Register(c, req)
+	res, err := json.Marshal(req)
 	if err != nil {
 		c.JSON(400, err)
+		return
 	}
-	c.JSON(200, res)
+	err = h.Kafka.ProduceMessages("auth", res)
+	if err != nil {
+		c.JSON(400, err)
+		return
+	}
+	c.JSON(200, "Success")
 }
 
 // Login godoc
@@ -112,6 +128,16 @@ func (h *Handler) ForgotPassword(c *gin.Context) {
 		c.JSON(400, gin.H{"error": "Invalid input"})
 		return
 	}
+	res, err := h.User.GetProfile(c, &user.GetProfileRequest{Email: req.Email})
+	if err != nil {
+		c.JSON(400, gin.H{"error": "Invalid input"})
+		return
+	}
+
+	if res == nil {
+		c.JSON(400, gin.H{"error": "Not found"})
+		return
+	}
 
 	// Random 6 xonali raqam yaratish
 	RandomCode := fmt.Sprintf("%06d", rand.Intn(1000000))
@@ -152,6 +178,7 @@ func (h *Handler) ResetPassword(c *gin.Context) {
 		c.JSON(400, gin.H{"error": "Failed to retrieve code from Redis"})
 		return
 	}
+
 	code, err := codeRes.Result()
 	if err != nil {
 		slog.Info(err.Error())

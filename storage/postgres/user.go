@@ -63,7 +63,7 @@ func (p *UserRepo) UpdateProfile(ctx context.Context, req *pb.UpdateProfileReque
 		log.Printf("Error update profile: %v\n", err)
 		return nil, err
 	}
-	return &pb.UpdateProfileResponse{Message: "Profile updated successfully"}, nil
+	return &pb.UpdateProfileResponse{}, nil
 
 }
 

@@ -13,6 +13,7 @@ service UserService {
 }
 
 
+
 message GetProfileRequest {
     string id = 1;
     string email = 2;
@@ -35,9 +36,7 @@ message UpdateProfileRequest {
   string email = 4;
 }
 
-message UpdateProfileResponse {
-  string message = 1;
-}
+message UpdateProfileResponse {}
 
 
 message ChangePasswordRequest {
@@ -45,9 +44,7 @@ message ChangePasswordRequest {
   string new_password = 2;
 }
 
-message ChangePasswordResponse {
-  string message = 1;
-}
+message ChangePasswordResponse {}
 
 
 

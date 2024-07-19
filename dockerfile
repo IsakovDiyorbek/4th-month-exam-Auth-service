@@ -24,10 +24,6 @@ WORKDIR /app
 
 # Copy the compiled binary from the builder stage
 COPY --from=builder /app/myapp .
-# Copy the configuration files
-COPY --from=builder /app/config/model.conf ./config/
-COPY --from=builder /app/config/policy.csv ./config/
-
 # Optionally copy the .env file if it's needed
 COPY --from=builder /app/.env .
 

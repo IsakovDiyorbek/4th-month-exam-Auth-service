@@ -27,12 +27,9 @@ func (p *AuthRepo) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.R
 	query := `
 		INSERT INTO users(id, username, email, password_hash, full_name, date_of_birth)
 		VALUES ($1, $2, $3, $4, $5, $6)
-		RETURNING id, username, email, full_name, date_of_birth, created_at
-	`
-	var user pb.RegisterResponse
-	err := p.db.QueryRowContext(ctx, query, userId, req.Username, req.Email, req.Password, req.FullName, req.DateOfBirth).Scan(
-		&user.Id, &user.Username, &user.Email, &user.FullName, &req.DateOfBirth, &user.CreatedAt,
-	)
+		`
+	_, err := p.db.ExecContext(ctx, query, userId, req.Username, req.Email, req.Password, req.FullName, req.DateOfBirth)
+
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +49,7 @@ func (p *AuthRepo) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.R
 		return nil, err
 	}
 
-	return &user, nil
+	return &pb.RegisterResponse{}, nil
 }
 
 func (p *AuthRepo) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
